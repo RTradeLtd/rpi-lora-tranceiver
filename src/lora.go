@@ -33,11 +33,14 @@ func main() {
 		pinSS.Write(rpio.High)
 	}
 	readReg := func(addr byte) byte {
+		log.Println("running select receiver")
 		selectReceiver()
 		var spibuf = [2]byte{}
 		spibuf[0] = addr & 0x7f
 		spibuf[1] = 0x00
+		log.Println("transmitting spi data")
 		rpio.SpiTransmit(spibuf[0], spibuf[1], 2)
+		log.Println("unslecting receiver")
 		unselectReceiver()
 		return spibuf[1]
 	}
