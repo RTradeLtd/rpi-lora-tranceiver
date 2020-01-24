@@ -20,6 +20,7 @@ func main() {
 		log.Fatal(err)
 	}
 	defer rpio.Close()
+
 	// set pins in output mode
 	log.Println("setting up ss pin")
 	pinSS := rpio.Pin(ssPin)
@@ -72,6 +73,23 @@ func main() {
 		unselectReceiver()
 		return spibuf[1]
 	}
+	var sx1272, sx1276 bool
 	version := readReg(byte(REG_VERSION))
+	if version == 0x22 {
+		log.Println("SX1272 detected")
+		sx1272 = true
+	} else {
+		pinRST.Write(rpio.Low)
+		time.Sleep(time.Millisecond * 100)
+		pinRST.Write(rpio.High)
+		time.Sleep(time.Millisecond * 100)
+		version = readReg(byte(REG_VERSION))
+		if version == 0x12 {
+			sx1276 = true
+		} else {
+			log.Fatalf("unrecognized transceiver: %v", version)
+		}
+	}
+	_, _ = sx1272, sx1276
 	log.Println("version: ", string(version))
 }
