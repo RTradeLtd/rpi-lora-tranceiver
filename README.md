@@ -2,6 +2,8 @@
 
 To install the "app" run `install.sh`
 
+
+
 # Golang Implementation
 
 
@@ -31,4 +33,20 @@ Resources:
 * http://wiki.dragino.com/images/9/9b/RPi_GPIO.jpg
 * http://wiki.dragino.com/images/e/e1/Lora_hat_wiring.png
 
-import "github.com/stianeikeland/go-rpio/v4"
+
+| LoRa GPS HAT | RaspberryPi Wiring PI IO |
+|--------------|--------------------------|
+| 3.3v | 3.3v |
+| 5v | 5v |
+| GND | GND | 
+| DIO0 | GPIO7 |
+| GPS_RX | GPIO15/TX  |
+| GPS_TX | GPIO16/RX |
+| RESET | GPIO0 |
+| LoRa_NSS | GPIO6 |
+| LoRa_MISO | GPIO13/MISO |
+| LoRa_MOSI | GPIO12/MOSI |
+| SCK | GPIO14/SCLK |
+| DIO1 | GPIO4 |
+| DIO2 | GPIO5 |
+| 1PPS | GPIO1 |
