@@ -56,10 +56,13 @@ func main() {
 	rpio.SpiSpeed(500000)
 	// setup lora
 	log.Println("setting up lora")
+	log.Println("writing rst pin - low")
 	pinRST.Write(rpio.High)
 	time.Sleep(time.Millisecond * 100)
+	log.Println("writing rst pin - high")
 	pinRST.Write(rpio.Low)
 	time.Sleep(time.Millisecond * 100)
+	log.Println("reading version")
 	version := readReg(byte(REG_VERSION))
 	log.Println("version: ", string(version))
 }
