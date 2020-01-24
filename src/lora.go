@@ -1,6 +1,7 @@
 package lora
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -24,6 +25,20 @@ func main() {
 	pinSS := rpio.Pin(ssPin)
 	defer pinSS.PullDown()
 	pinSS.Output()
+	selectReceiver := func() {
+		pinSS.Write(rpio.Low)
+	}
+	unselectReceiver := func() {
+		pinSS.Write(rpio.High)
+	}
+	readReg := func(addr byte) byte {
+		selectReceiver()
+		var spibuf = [2]byte{}
+		spibuf[0] = addr & 0x8f
+		spibuf[1] = 0x00
+		rpio.SpiTransmit(spibuf[0], spibuf[1], 2)
+		unselectReceiver()
+	}
 	pinDIO := rpio.Pin(dio0)
 	defer pinDIO.PullDown()
 	pinDIO.Output()
@@ -39,4 +54,6 @@ func main() {
 	time.Sleep(time.Millisecond * 100)
 	pinRST.Write(rpio.Low)
 	time.Sleep(time.Millisecond * 100)
+	version := readReg(byte(REG_VERSION))
+	fmt.Println("version: ", string(version))
 }
