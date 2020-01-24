@@ -1,7 +1,6 @@
-package lora
+package main
 
 import (
-	"fmt"
 	"log"
 	"time"
 
@@ -22,9 +21,11 @@ func main() {
 	}
 	defer rpio.Close()
 	// set pins in output mode
+	log.Println("setting up ss pin")
 	pinSS := rpio.Pin(ssPin)
 	defer pinSS.PullDown()
 	pinSS.Output()
+	log.Println("declaring receiver functions")
 	selectReceiver := func() {
 		pinSS.Write(rpio.Low)
 	}
@@ -38,22 +39,27 @@ func main() {
 		spibuf[1] = 0x00
 		rpio.SpiTransmit(spibuf[0], spibuf[1], 2)
 		unselectReceiver()
+		return spibuf[1]
 	}
+	log.Println("setting up dio pin")
 	pinDIO := rpio.Pin(dio0)
 	defer pinDIO.PullDown()
 	pinDIO.Output()
+	log.Println("setting up rst pin")
 	pinRST := rpio.Pin(RST)
 	defer pinRST.PullDown()
 	pinRST.Output()
 	// setup spi
+	log.Println("setting up spi")
 	rpio.SpiBegin(rpio.Spi0)
 	defer rpio.SpiEnd(rpio.Spi0)
 	rpio.SpiSpeed(500000)
 	// setup lora
+	log.Println("setting up lora")
 	pinRST.Write(rpio.High)
 	time.Sleep(time.Millisecond * 100)
 	pinRST.Write(rpio.Low)
 	time.Sleep(time.Millisecond * 100)
 	version := readReg(byte(REG_VERSION))
-	fmt.Println("version: ", string(version))
+	log.Println("version: ", string(version))
 }

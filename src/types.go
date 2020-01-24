@@ -1,4 +1,4 @@
-package lora
+package main
 
 var (
 	REG_FIFO                 = 0x00
