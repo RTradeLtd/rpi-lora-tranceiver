@@ -9,9 +9,9 @@ import (
 
 var (
 	// SX1272 - Raspberry connections
-	ssPin   = 6
-	dio0    = 7
-	RST     = 0
+	ssPin   = 6 // (nss)
+	dio0    = 7 // (dio)
+	RST     = 0 // (reset)
 	channel = 0 // (or rpio.Spio)
 )
 
@@ -48,29 +48,29 @@ func main() {
 	// setup lora
 	log.Println("setting up lora")
 	log.Println("writing rst pin - low")
-	pinRST.Write(rpio.High)
+	pinRST.High()
 	time.Sleep(time.Millisecond * 100)
 	log.Println("writing rst pin - high")
-	pinRST.Write(rpio.Low)
+	pinRST.Low()
 	time.Sleep(time.Millisecond * 100)
 
 	log.Println("reading version")
-	selectReceiver := func() {
-		pinSS.Write(rpio.Low)
+	selectReceiver := func(pin rpio.Pin) {
+		pin.Low()
 	}
-	unselectReceiver := func() {
-		pinSS.Write(rpio.High)
+	unselectReceiver := func(pin rpio.Pin) {
+		pin.High()
 	}
-	readReg := func(addr byte) byte {
+	readReg := func(addr byte, pin rpio.Pin) byte {
 		log.Println("running select receiver")
-		selectReceiver()
+		selectReceiver(pin)
 		var spibuf = [2]byte{}
 		spibuf[0] = addr & 0x7f
 		spibuf[1] = 0x00
 		log.Println("transmitting spi data")
 		rpio.SpiTransmit(spibuf[0], spibuf[1])
 		log.Println("unslecting receiver")
-		unselectReceiver()
+		unselectReceiver(pin)
 		return spibuf[1]
 	}
 	var sx1272, sx1276 bool
@@ -83,7 +83,7 @@ func main() {
 		time.Sleep(time.Millisecond * 100)
 		pinRST.Write(rpio.High)
 		time.Sleep(time.Millisecond * 100)
-		version = readReg(byte(REG_VERSION))
+		version = readReg(byte(REG_VERSION), pinSS)
 		if version == 0x12 {
 			sx1276 = true
 		} else {
