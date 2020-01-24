@@ -198,6 +198,13 @@ byte readReg(byte addr)
     selectreceiver();
     spibuf[0] = addr & 0x7F;
     spibuf[1] = 0x00;
+    /*
+This is the way to initialise a channel (The Pi has 2 channels; 0 and 1). The speed parameter is an integer in the range 500,000 through 32,000,000 and represents the SPI clock speed in Hz.
+
+The returned value is the Linux file-descriptor for the device, or -1 on error. If an error has happened, you may use the standard errno global variable to see why.
+
+int wiringPiSPIDataRW (int channel, unsigned char *data, int len) ;
+    */
     wiringPiSPIDataRW(CHANNEL, spibuf, 2);
     unselectreceiver();
 
