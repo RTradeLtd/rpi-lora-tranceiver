@@ -35,7 +35,7 @@ func main() {
 	readReg := func(addr byte) byte {
 		selectReceiver()
 		var spibuf = [2]byte{}
-		spibuf[0] = addr & 0x8f
+		spibuf[0] = addr & 0x7f
 		spibuf[1] = 0x00
 		rpio.SpiTransmit(spibuf[0], spibuf[1], 2)
 		unselectReceiver()
