@@ -26,9 +26,7 @@ func main() {
 	readReg := func(addr byte, pin rpio.Pin) byte {
 		log.Println("running select receiver")
 		selectReceiver(pin)
-		var spibuf = [2]byte{}
-		spibuf[0] = addr & 0x7f
-		spibuf[1] = 0x00
+		var spibuf = []byte{addr & 0x7F, 0x00}
 		log.Println("transmitting spi data")
 		rpio.SpiTransmit(spibuf[0], spibuf[1])
 		recv := rpio.SpiReceive(2)
