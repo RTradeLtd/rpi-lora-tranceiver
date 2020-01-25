@@ -26,6 +26,7 @@ Resources:
 
 * https://github.com/rakyll/go-hardware
 * https://medium.com/@farissyariati/go-raspberry-pi-hello-world-tutorial-7e830d08b3ae
+* https://docs.heltec.cn/#/en/user_manual/how_to_install_esp32_Arduino?id=_1-execute-a-example-likes-factorytestino
 
 
 # GPIO Pin Outs
