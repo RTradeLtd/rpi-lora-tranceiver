@@ -35,7 +35,7 @@ func main() {
 		log.Println("unslecting receiver")
 		unselectReceiver(pin)
 		fmt.Printf("received %v bytes, string: %s", len(recv), string(recv))
-		return spibuf[1]
+		return recv[1]
 	}
 	if err := rpio.Open(); err != nil {
 		log.Fatal(err)
