@@ -85,5 +85,5 @@ func main() {
 	}
 	_, _ = sx1272, sx1276
 	log.Println("version: ", string(version))
-	writeReg(byte(RegPaRamp), (readReg(byte(RegPaRamp))&0xF0 | 0x08), pinSS)
+	writeReg(byte(RegPaRamp), (readReg(byte(RegPaRamp)&0xF0|0x08, pinSS)), pinSS)
 }
