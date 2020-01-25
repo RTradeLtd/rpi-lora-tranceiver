@@ -29,7 +29,7 @@ func main() {
 		spibuf[0] = addr & 0x7f
 		spibuf[1] = 0x00
 		log.Println("transmitting spi data")
-		rpio.SpiTransmit(spibuf[0], spibuf[1])
+		rpio.SpiExchange(spibuf[:])
 		log.Println("unslecting receiver")
 		unselectReceiver(pin)
 		return spibuf[1]
@@ -42,15 +42,13 @@ func main() {
 		log.Fatal(err)
 	}
 	defer rpio.SpiEnd(rpio.Spi0)
-	rpio.SpiChipSelect(0)
+	// TODO(bonedaddy): do we need this
+	// rpio.SpiChipSelect(0)
 	// set pins in output mode
 	log.Println("setting up pins")
 	pinSS := rpio.Pin(ssPin)
-	defer pinSS.PullDown()
 	pinDIO := rpio.Pin(dio0)
-	defer pinDIO.PullDown()
 	pinRST := rpio.Pin(RST)
-	defer pinRST.PullDown()
 	pinSS.Output()
 	pinDIO.Output()
 	pinRST.Output()
@@ -59,13 +57,13 @@ func main() {
 	log.Println("setting up spi")
 
 	rpio.SpiSpeed(500000)
-	rpio.SpiChipSelect(0)
 
 	// setup lora
 	log.Println("setting up lora")
 	pinRST.High()
 	time.Sleep(time.Millisecond * 100)
 	pinRST.Low()
+	time.Sleep(time.Millisecond * 100)
 
 	log.Println("reading version")
 	var sx1272, sx1276 bool
