@@ -65,13 +65,14 @@ func main() {
 		log.Println("SX1272 detected")
 		sx1272 = true
 	} else {
-		pinRST.Write(rpio.Low)
+		pinRST.Low()
 		time.Sleep(time.Millisecond * 100)
-		pinRST.Write(rpio.High)
+		pinRST.High()
 		time.Sleep(time.Millisecond * 100)
 		version = readReg(byte(REG_VERSION), pinSS)
 		if version == 0x12 {
 			sx1276 = true
+			log.Println("SX1276 detected")
 		} else {
 			log.Fatalf("unrecognized transceiver: %v", version)
 		}
