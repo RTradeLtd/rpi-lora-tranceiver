@@ -38,6 +38,10 @@ func main() {
 		log.Fatal(err)
 	}
 	defer rpio.Close()
+	if err := rpio.SpiBegin(rpio.Spi0); err != nil {
+		log.Fatal(err)
+	}
+	defer rpio.SpiEnd(rpio.Spi0)
 
 	// set pins in output mode
 	log.Println("setting up pins")
@@ -53,8 +57,7 @@ func main() {
 
 	// setup spi
 	log.Println("setting up spi")
-	rpio.SpiBegin(rpio.Spi0)
-	defer rpio.SpiEnd(rpio.Spi0)
+
 	rpio.SpiSpeed(500000)
 	rpio.SpiChipSelect(0)
 
