@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -29,9 +30,11 @@ func main() {
 		spibuf[0] = addr & 0x7f
 		spibuf[1] = 0x00
 		log.Println("transmitting spi data")
-		rpio.SpiExchange(spibuf[:])
+		rpio.SpiTransmit(spibuf[0], spibuf[1])
+		recv := rpio.SpiReceive(2)
 		log.Println("unslecting receiver")
 		unselectReceiver(pin)
+		fmt.Printf("received %v bytes", recv)
 		return spibuf[1]
 	}
 	if err := rpio.Open(); err != nil {
