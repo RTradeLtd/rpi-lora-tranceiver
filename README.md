@@ -7,6 +7,8 @@ To install the "app" run `install.sh`
 # Golang Implementation
 
 
+* https://github.com/SpaceLeap/go-embedded/blob/master/spi/spi.go (raw spi library)
+
 Active (no CGO):
 
 * https://github.com/stianeikeland/go-rpio
