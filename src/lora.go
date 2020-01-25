@@ -24,6 +24,12 @@ func main() {
 		pin.Low()
 		return spibuf[1]
 	}
+	writeReg := func(addr byte, value byte, pin rpio.Pin) {
+		pin.High()
+		var spibuf = []byte{addr | 0x80, value}
+		rpio.SpiExchange(spibuf)
+		pin.Low()
+	}
 	if err := rpio.Open(); err != nil {
 		log.Fatal(err)
 	}
@@ -73,10 +79,11 @@ func main() {
 		if version == 0x12 {
 			sx1276 = true
 			log.Println("SX1276 detected")
-		} else {
+		} /*else {
 			log.Fatalf("unrecognized transceiver: %v", version)
-		}
+		}*/
 	}
 	_, _ = sx1272, sx1276
 	log.Println("version: ", string(version))
+	writeReg(byte(RegPaRamp), (readReg(byte(RegPaRamp))&0xF0 | 0x08), pinSS)
 }
