@@ -47,22 +47,22 @@ func main() {
 	pinSS := rpio.Pin(ssPin)
 	pinDIO := rpio.Pin(dio0)
 	pinRST := rpio.Pin(RST)
-	pinSS.Output()
+	/*pinSS.Output()
 	pinDIO.Output()
 	pinRST.Output()
-
+	*/
 	// setup spi
 	log.Println("setting up spi")
 
 	rpio.SpiSpeed(500000)
 
-	// setup lora
+	/*// setup lora
 	log.Println("setting up lora")
 	pinRST.High()
 	time.Sleep(time.Millisecond * 100)
 	pinRST.Low()
 	time.Sleep(time.Millisecond * 100)
-
+	*/
 	log.Println("reading version")
 	var sx1272, sx1276 bool
 	version := readReg(byte(REG_VERSION), pinSS)
