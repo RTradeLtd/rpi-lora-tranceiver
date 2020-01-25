@@ -46,6 +46,7 @@ func main() {
 	}
 	defer rpio.SpiEnd(rpio.Spi0)
 	rpio.SpiSpeed(500000)
+	rpio.SpiChipSelect(0)
 
 	// setup lora
 	log.Println("setting up lora")
