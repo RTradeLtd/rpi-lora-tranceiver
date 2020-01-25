@@ -16,45 +16,6 @@ var (
 )
 
 func main() {
-	if err := rpio.Open(); err != nil {
-		log.Fatal(err)
-	}
-	defer rpio.Close()
-
-	// set pins in output mode
-	log.Println("setting up ss pin")
-	pinSS := rpio.Pin(ssPin)
-	defer pinSS.PullDown()
-	pinSS.Output()
-	log.Println("declaring receiver functions")
-
-	log.Println("setting up dio pin")
-	pinDIO := rpio.Pin(dio0)
-	defer pinDIO.PullDown()
-	pinDIO.Output()
-
-	log.Println("setting up rst pin")
-	pinRST := rpio.Pin(RST)
-	defer pinRST.PullDown()
-	pinRST.Output()
-
-	// setup spi
-	log.Println("setting up spi")
-	rpio.SpiBegin(rpio.Spi0)
-	defer rpio.SpiEnd(rpio.Spi0)
-	rpio.SpiSpeed(500000)
-	rpio.SpiChipSelect(0)
-
-	// setup lora
-	log.Println("setting up lora")
-	log.Println("writing rst pin - low")
-	pinRST.High()
-	time.Sleep(time.Millisecond * 100)
-	log.Println("writing rst pin - high")
-	pinRST.Low()
-	time.Sleep(time.Millisecond * 100)
-
-	log.Println("reading version")
 	selectReceiver := func(pin rpio.Pin) {
 		pin.Low()
 	}
@@ -73,8 +34,39 @@ func main() {
 		unselectReceiver(pin)
 		return spibuf[1]
 	}
+	if err := rpio.Open(); err != nil {
+		log.Fatal(err)
+	}
+	defer rpio.Close()
+
+	// set pins in output mode
+	log.Println("setting up pins")
+	pinSS := rpio.Pin(ssPin)
+	defer pinSS.PullDown()
+	pinDIO := rpio.Pin(dio0)
+	defer pinDIO.PullDown()
+	pinRST := rpio.Pin(RST)
+	defer pinRST.PullDown()
+	pinSS.Output()
+	pinDIO.Output()
+	pinRST.Output()
+
+	// setup spi
+	log.Println("setting up spi")
+	rpio.SpiBegin(rpio.Spi0)
+	defer rpio.SpiEnd(rpio.Spi0)
+	rpio.SpiSpeed(500000)
+	rpio.SpiChipSelect(0)
+
+	// setup lora
+	log.Println("setting up lora")
+	pinRST.High()
+	time.Sleep(time.Millisecond * 100)
+	pinRST.Low()
+
+	log.Println("reading version")
 	var sx1272, sx1276 bool
-	version := readReg(byte(REG_VERSION))
+	version := readReg(byte(REG_VERSION), pinSS)
 	if version == 0x22 {
 		log.Println("SX1272 detected")
 		sx1272 = true
