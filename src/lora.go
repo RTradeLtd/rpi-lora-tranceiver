@@ -17,10 +17,8 @@ var (
 
 func main() {
 	readReg := func(addr byte, pin rpio.Pin) byte {
-		log.Println("running select receiver")
 		pin.High()
 		var spibuf = []byte{addr & 0x7F, 0x00}
-		log.Println("transmitting spi data")
 		rpio.SpiExchange(spibuf)
 		pin.Low()
 		return spibuf[1]
@@ -29,10 +27,7 @@ func main() {
 		log.Fatal(err)
 	}
 	defer rpio.Close()
-	if err := rpio.SpiBegin(rpio.Spi0); err != nil {
-		log.Fatal(err)
-	}
-	defer rpio.SpiEnd(rpio.Spi0)
+
 	// TODO(bonedaddy): do we need this
 	// rpio.SpiChipSelect(0)
 	// set pins in output mode
@@ -46,7 +41,10 @@ func main() {
 
 	// setup spi
 	log.Println("setting up spi")
-
+	if err := rpio.SpiBegin(rpio.Spi0); err != nil {
+		log.Fatal(err)
+	}
+	defer rpio.SpiEnd(rpio.Spi0)
 	rpio.SpiSpeed(500000)
 
 	// setup lora
