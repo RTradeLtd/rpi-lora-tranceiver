@@ -42,7 +42,7 @@ func main() {
 		log.Fatal(err)
 	}
 	defer rpio.SpiEnd(rpio.Spi0)
-
+	rpio.SpiChipSelect(0)
 	// set pins in output mode
 	log.Println("setting up pins")
 	pinSS := rpio.Pin(ssPin)
