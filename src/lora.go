@@ -31,19 +31,19 @@ var (
 )
 
 func main() {
-	readReg := func(addr byte, pin rpio.Pin) byte {
-		pin.High()
+	readReg := func(addr byte) byte {
+		rpio.WritePin(rpio.Pin(ssPin), rpio.Low)
 		var spibuf = []byte{addr & 0x7F, 0x00}
 		rpio.SpiExchange(spibuf)
-		pin.Low()
+		rpio.WritePin(rpio.Pin(RST), rpio.High)
 		return spibuf[1]
 	}
-	writeReg := func(addr byte, value byte, pin rpio.Pin) {
+	/*writeReg := func(addr byte, value byte, pin rpio.Pin) {
 		pin.High()
 		var spibuf = []byte{addr | 0x80, value}
 		rpio.SpiExchange(spibuf)
 		pin.Low()
-	}
+	}*/
 	if err := rpio.Open(); err != nil {
 		log.Fatal(err)
 	}
@@ -53,12 +53,9 @@ func main() {
 	// rpio.SpiChipSelect(0)
 	// set pins in output mode
 	log.Println("setting up pins")
-	pinSS := rpio.Pin(ssPin)
-	pinDIO := rpio.Pin(dio0)
-	pinRST := rpio.Pin(RST)
-	pinSS.Output()
-	pinDIO.Output()
-	pinRST.Output()
+	rpio.PinMode(rpio.Pin(ssPin), rpio.Output)
+	rpio.PinMode(rpio.Pin(dio0), rpio.Output)
+	rpio.PinMode(rpio.Pin(RST), rpio.Output)
 
 	// setup spi
 	log.Println("setting up spi")
@@ -71,25 +68,25 @@ func main() {
 
 	// setup lora
 	log.Println("setting up lora")
-	pinRST.High()
+	rpio.WritePin(rpio.Pin(RST), rpio.High)
 	time.Sleep(time.Millisecond * 100)
-	pinRST.Low()
+	rpio.WritePin(rpio.Pin(RST), rpio.Low)
 	time.Sleep(time.Millisecond * 100)
 
 	log.Println("reading version")
 	var sx1272, sx1276 bool
-	version := readReg(byte(REG_VERSION), pinSS)
+	version := readReg(byte(REG_VERSION))
 	fmt.Println("sx1272 ", 0x22)
 	fmt.Println("sx1276 ", 0x12)
 	if version == 0x22 {
 		log.Println("SX1272 detected")
 		sx1272 = true
 	} else {
-		pinRST.Low()
+		rpio.WritePin(rpio.Pin(RST), rpio.Low)
 		time.Sleep(time.Millisecond * 100)
-		pinRST.High()
+		rpio.WritePin(rpio.Pin(RST), rpio.High)
 		time.Sleep(time.Millisecond * 100)
-		version = readReg(byte(REG_VERSION), pinSS)
+		version = readReg(byte(REG_VERSION))
 		if version == 0x12 {
 			sx1276 = true
 			log.Println("SX1276 detected")
@@ -99,5 +96,5 @@ func main() {
 	}
 	_, _ = sx1272, sx1276
 	log.Println("version: ", string(version))
-	writeReg(byte(RegPaRamp), (readReg(byte(RegPaRamp)&0xF0|0x08, pinSS)), pinSS)
+	//	writeReg(byte(RegPaRamp), (readReg(byte(RegPaRamp)&0xF0|0x08, pinSS)), pinSS)
 }
