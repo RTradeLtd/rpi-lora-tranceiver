@@ -28,6 +28,7 @@ var (
 	   SWITCH = 4  # RaspPi GPIO 4 connects to a switch
 	   SPI_CS = 2  # Chip Select pin to use
 	*/
+	reg byte = 0x42
 )
 
 func main() {
@@ -75,7 +76,7 @@ func main() {
 
 	log.Println("reading version")
 	var sx1272, sx1276 bool
-	version := readReg(byte(REG_VERSION))
+	version := readReg(reg)
 	fmt.Println("sx1272 ", 0x22)
 	fmt.Println("sx1276 ", 0x12)
 	if version == 0x22 {
@@ -86,7 +87,7 @@ func main() {
 		time.Sleep(time.Millisecond * 100)
 		rpio.WritePin(rpio.Pin(RST), rpio.High)
 		time.Sleep(time.Millisecond * 100)
-		version = readReg(byte(REG_VERSION))
+		version = readReg(reg)
 		if version == 0x12 {
 			sx1276 = true
 			log.Println("SX1276 detected")
