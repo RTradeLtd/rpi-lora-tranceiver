@@ -6,7 +6,7 @@
  *
  *******************************************************************************/
 
-#include <string>
+#include <stdbool.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -168,7 +168,7 @@ int dio0  = 7;
 int RST   = 0;
 
 // Set spreading factor (SF7 - SF12)
-sf_t sf = SF7;
+enum sf_t sf = SF7;
 
 // Set center frequency
 uint32_t  freq = 868100000; // in Mhz! (868.1)
