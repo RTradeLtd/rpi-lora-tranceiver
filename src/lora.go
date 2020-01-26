@@ -79,7 +79,7 @@ func main() {
 	version := readReg(reg)
 	fmt.Println("sx1272 ", 0x22)
 	fmt.Println("sx1276 ", 0x12)
-	if version == 0x22 {
+	if string(version) == fmt.Sprintf("%v", byte(0x22)) {
 		log.Println("SX1272 detected")
 		sx1272 = true
 	} else {
@@ -88,7 +88,7 @@ func main() {
 		rpio.WritePin(rpio.Pin(RST), rpio.High)
 		time.Sleep(time.Millisecond * 100)
 		version = readReg(reg)
-		if version == 0x12 {
+		if string(version) == fmt.Sprintf("%v", byte(0x12)) {
 			sx1276 = true
 			log.Println("SX1276 detected")
 		} else {
