@@ -8,6 +8,13 @@ import (
 	"github.com/stianeikeland/go-rpio/v4"
 )
 
+/*
+Notes:
+
+Look into using https://github.com/brocaar/lorawan to read/write to the gpio byte slices
+
+*/
+
 var (
 	// SX1272 - Raspberry connections
 	ssPin   = 25 // (nss)
