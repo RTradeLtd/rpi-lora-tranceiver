@@ -10,10 +10,24 @@ import (
 
 var (
 	// SX1272 - Raspberry connections
+	ssPin   = 25 // (nss)
+	dio0    = 4  // (dio)
+	RST     = 7  // (reset)
+	channel = 0  // (or rpio.Spio)
+	/* original
 	ssPin   = 6 // (nss)
 	dio0    = 7 // (dio)
 	RST     = 0 // (reset)
-	channel = 0 // (or rpio.Spio)
+	*/
+	/* from https://github.com/computenodes/dragino/blob/master/dragino/SX127x/board_config.py
+	   DIO0 = 4   # RaspPi GPIO 4
+	   DIO1 = 23   # RaspPi GPIO 23
+	   DIO2 = 24   # RaspPi GPIO 24
+	   DIO3 = None # Not connected on dragino header
+	   LED  = 18   # RaspPi GPIO 18 connects to the LED on the proto shield
+	   SWITCH = 4  # RaspPi GPIO 4 connects to a switch
+	   SPI_CS = 2  # Chip Select pin to use
+	*/
 )
 
 func main() {
@@ -79,9 +93,9 @@ func main() {
 		if version == 0x12 {
 			sx1276 = true
 			log.Println("SX1276 detected")
-		} /*else {
+		} else {
 			log.Fatalf("unrecognized transceiver: %v", version)
-		}*/
+		}
 	}
 	_, _ = sx1272, sx1276
 	log.Println("version: ", string(version))
